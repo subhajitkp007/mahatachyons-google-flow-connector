@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mahatachyons Google Flow Connector</title>
+    <link rel="stylesheet" href="./panel.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">M</div>
+        <div>
+          <div class="brand-title">Mahatachyons Flow</div>
+          <div class="brand-sub">Google Flow Connector</div>
+        </div>
+      </div>
+      <span class="pro-badge">UNLIMITED</span>
+    </header>
+
+    <section class="status-strip">
+      <div class="status-pill" id="bridge-pill">
+        <span class="dot" id="bridge-dot"></span>
+        <span id="bridge-label">Bridge: checking…</span>
+      </div>
+      <div class="status-pill" id="flow-pill">
+        <span class="dot" id="flow-dot"></span>
+        <span id="flow-label">Flow: checking…</span>
+      </div>
+      <button class="btn-ghost btn-xs" id="open-flow-btn" title="Open or focus Google Flow tab">
+        Open Flow
+      </button>
+    </section>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="queue">Queue</button>
+      <button class="tab" data-tab="composer">Quick Run</button>
+      <button class="tab" data-tab="settings">Settings</button>
+      <button class="tab" data-tab="diagnostics">Diagnostics</button>
+    </nav>
+
+    <!-- TAB 1: QUEUE -->
+    <main class="tab-panel active" id="tab-queue">
+      <div class="toolbar">
+        <button class="btn btn-primary" id="pause-btn">Pause</button>
+        <button class="btn btn-danger" id="stop-btn">Stop All</button>
+        <button class="btn btn-secondary" id="clear-done-btn">Clear Done</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-num" id="count-running">0</span>
+          <span class="stat-label">Running</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="count-queued">0</span>
+          <span class="stat-label">Queued</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="count-done">0</span>
+          <span class="stat-label">Done</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="count-failed">0</span>
+          <span class="stat-label">Failed</span>
+        </div>
+      </div>
+
+      <div id="job-list" class="job-list"></div>
+    </main>
+
+    <!-- TAB 2: QUICK RUN COMPOSER -->
+    <main class="tab-panel" id="tab-composer">
+      <form id="quick-form" class="card-form">
+        <label class="field">
+          <span>Mode</span>
+          <select id="q-mode">
+            <option value="flow-image">Image — Text / References to Image</option>
+            <option value="flow-text-to-video">Video — Text to Video</option>
+            <option value="flow-frame-to-video">Video — Frames to Video</option>
+            <option value="flow-ingredients-to-video">Video — Ingredients to Video</option>
+          </select>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Model</span>
+            <select id="q-model">
+              <option value="">Default</option>
+              <option value="nano-banana-pro">Nano Banana Pro (Image)</option>
+              <option value="nano-banana-2">Nano Banana 2 (Image)</option>
+              <option value="veo-3.1-quality">Veo 3.1 Quality (Video)</option>
+              <option value="veo-3.1-fast">Veo 3.1 Fast (Video)</option>
+              <option value="veo-3.1-lite">Veo 3.1 Lite (Video)</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Aspect Ratio</span>
+            <select id="q-aspect">
+              <option value="16:9">16:9 Landscape</option>
+              <option value="9:16">9:16 Portrait</option>
+              <option value="1:1">1:1 Square</option>
+              <option value="4:3">4:3</option>
+              <option value="3:4">3:4</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Outputs (1–4)</span>
+            <select id="q-count">
+              <option value="1">x1</option>
+              <option value="2">x2</option>
+              <option value="3">x3</option>
+              <option value="4">x4</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Video Duration</span>
+            <select id="q-duration">
+              <option value="">Default</option>
+              <option value="4s">4s</option>
+              <option value="6s">6s</option>
+              <option value="8s">8s</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Prompt</span>
+          <textarea
+            id="q-prompt"
+            rows="4"
+            placeholder="Describe the image or video scene to generate on Google Flow…"
+            required
+          ></textarea>
+        </label>
+
+        <button type="submit" class="btn btn-primary btn-block">Enqueue Generation</button>
+      </form>
+    </main>
+
+    <!-- TAB 3: SETTINGS -->
+    <main class="tab-panel" id="tab-settings">
+      <div class="settings-card">
+        <div class="setting-header">
+          <div>
+            <div class="setting-title">Generation Speed &amp; Batching</div>
+            <div class="setting-desc" id="speed-desc">Level 4 — 4 prompts / batch (max 8 outputs)</div>
+          </div>
+          <span class="speed-pill" id="speed-badge">4x</span>
+        </div>
+        <input type="range" id="speed-slider" min="1" max="6" step="1" value="4" />
+        <div class="range-labels">
+          <span>1x Safe</span>
+          <span>2x</span>
+          <span>3x</span>
+          <span>4x Fast</span>
+          <span>5x</span>
+          <span>6x Turbo</span>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <label class="toggle-row">
+          <div>
+            <div class="setting-title">2K Image Upscaling</div>
+            <div class="setting-desc">Automatically download images via Flow's 2K upscaler</div>
+          </div>
+          <input type="checkbox" id="toggle-2k" />
+        </label>
+
+        <label class="toggle-row">
+          <div>
+            <div class="setting-title">1080p Video Upscaling</div>
+            <div class="setting-desc">Automatically upscale videos to 1080p HD on download</div>
+          </div>
+          <input type="checkbox" id="toggle-1080p" />
+        </label>
+
+        <label class="toggle-row">
+          <div>
+            <div class="setting-title">Start Runs in New Project</div>
+            <div class="setting-desc">Default new CLI/MCP runs to a fresh Flow project</div>
+          </div>
+          <input type="checkbox" id="toggle-new-project" />
+        </label>
+      </div>
+
+      <div class="settings-card">
+        <div class="setting-title">AI Agent Integration (CLI &amp; MCP)</div>
+        <div class="setting-desc">
+          Copy the setup instructions for Claude Code, Cursor, Codex, or Antigravity.
+        </div>
+        <button class="btn btn-secondary btn-block" id="copy-setup-btn" style="margin-top: 8px">
+          Copy Agent Setup Prompt
+        </button>
+      </div>
+    </main>
+
+    <!-- TAB 4: DIAGNOSTICS -->
+    <main class="tab-panel" id="tab-diagnostics">
+      <div class="toolbar">
+        <button class="btn btn-primary" id="run-hc-btn">Selector Healthcheck</button>
+        <button class="btn btn-secondary" id="refresh-logs-btn">Refresh Logs</button>
+        <button class="btn btn-secondary" id="copy-logs-btn">Copy</button>
+        <button class="btn btn-danger" id="clear-logs-btn">Clear</button>
+      </div>
+
+      <div id="hc-results" class="hc-results hidden"></div>
+      <pre id="logs-view" class="logs-view">Loading logs…</pre>
+    </main>
+
+    <script type="module" src="./panel.js"></script>
+  </body>
+</html>
+

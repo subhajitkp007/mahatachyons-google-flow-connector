@@ -1,0 +1,84 @@
+{
+  "manifest_version": 3,
+  "name": "Mahatachyons Google Flow Connector",
+  "short_name": "MFlow Connect",
+  "version": "1.0.0",
+  "description": "Unrestricted local bridge connecting your AI coding agent & CLI to Google Flow (Nano Banana, Veo 3.1, Omni Flash). Unlimited batching & 2K/1080p upscaling.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "downloads",
+    "tabs",
+    "scripting",
+    "alarms",
+    "debugger"
+  ],
+  "host_permissions": [
+    "https://flow.google.com/*",
+    "https://labs.google/*",
+    "http://127.0.0.1/*",
+    "http://localhost/*"
+  ],
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "src/content/automator-loader.js"
+      ],
+      "matches": [
+        "https://flow.google.com/*",
+        "https://labs.google/*"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "js": [
+        "src/content/main-world-spy.js"
+      ],
+      "matches": [
+        "https://flow.google.com/*",
+        "https://labs.google/*"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ],
+  "side_panel": {
+    "default_path": "src/sidepanel/index.html"
+  },
+  "action": {
+    "default_title": "Mahatachyons Flow Connector",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "https://flow.google.com/*",
+        "https://labs.google/*"
+      ],
+      "resources": [
+        "src/shared/selectors.js",
+        "src/shared/flow-url.js",
+        "src/shared/logger.js",
+        "src/content/automator.js",
+        "src/content/main-world-spy.js"
+      ],
+      "use_dynamic_url": false
+    }
+  ]
+}
+

@@ -1,0 +1,41 @@
+{
+  "name": "mahatachyons-flow-connector",
+  "version": "1.0.0",
+  "description": "Mahatachyons Google Flow Connector — Unrestricted, self-hosted Chrome Extension, Local Bridge, CLI, and MCP Server for Google Flow image & video generation.",
+  "type": "module",
+  "bin": {
+    "mflow": "./bin/mflow.mjs",
+    "mflow-mcp": "./bin/mflow-mcp.mjs",
+    "flow-auto": "./bin/mflow.mjs",
+    "flow-auto-mcp": "./bin/mflow-mcp.mjs"
+  },
+  "scripts": {
+    "start": "node ./bin/mflow.mjs bridge start",
+    "status": "node ./bin/mflow.mjs status",
+    "doctor": "node ./bin/mflow.mjs doctor",
+    "mcp": "node ./bin/mflow-mcp.mjs",
+    "test": "node --check ./src/shared.mjs && node --check ./src/bridge.mjs && node --check ./src/cli.mjs && node --check ./src/mcp.mjs && node --check ./extension/src/background/service-worker.js && node --check ./extension/src/content/automator.js && node --check ./extension/src/content/main-world-spy.js && node --check ./extension/src/sidepanel/panel.js"
+  },
+  "keywords": [
+    "google-flow",
+    "veo",
+    "nano-banana",
+    "omni-flash",
+    "mcp",
+    "chrome-extension",
+    "automation",
+    "mahatachyons"
+  ],
+  "author": "Mahatachyons",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "commander": "^13.1.0",
+    "ws": "^8.18.0",
+    "zod": "^3.24.1"
+  }
+}
+
