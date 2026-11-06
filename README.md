@@ -52,7 +52,7 @@ An **unrestricted, self-hosted** Chrome Extension + Local Bridge + CLI (`mflow`)
 ### 1. Install Dependencies & Link CLI
 
 ```bash
-cd /Users/subhajitmahata/Desktop/github/automation
+cd /Users/subhajitmahata/Desktop/github/automation/mahatachyons-google-flow-connector
 npm install
 npm link
 ```
@@ -65,7 +65,7 @@ This makes `mflow`, `mflow-mcp`, `flow-auto`, and `flow-auto-mcp` available glob
 2. Enable **Developer mode** (top-right toggle)
 3. Click **Load unpacked** and select:
    ```text
-   /Users/subhajitmahata/Desktop/github/automation/extension
+   /Users/subhajitmahata/Desktop/github/automation/mahatachyons-google-flow-connector/extension
    ```
 4. Open [Google Flow](https://labs.google/fx/tools/flow) and sign in with your Google account.
 
@@ -146,7 +146,7 @@ Add `mflow-mcp` to your MCP client configuration (Claude Desktop, Claude Code, C
   "mcpServers": {
     "mahatachyons-flow": {
       "command": "node",
-      "args": ["/Users/subhajitmahata/Desktop/github/automation/bin/mflow-mcp.mjs"]
+      "args": ["/Users/subhajitmahata/Desktop/github/automation/mahatachyons-google-flow-connector/bin/mflow-mcp.mjs"]
     }
   }
 }

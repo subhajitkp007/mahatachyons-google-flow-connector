@@ -11,6 +11,8 @@ export const GENERATION_MODES = [
   "flow-ingredients-to-video",
   "flow-video-to-video",
   "flow-image",
+  "flow-text-to-image",
+  "flow-image-to-image",
   "text-to-image",
   "image-to-image",
   "flow-upload-assets",
@@ -41,6 +43,16 @@ export const MODE_DESCRIPTIONS = {
     kind: "image",
     maxImages: 8,
     summary: "Generate images from text and up to 8 reference images/characters."
+  },
+  "flow-text-to-image": {
+    kind: "image",
+    maxImages: 0,
+    summary: "Alias for flow-image without reference images."
+  },
+  "flow-image-to-image": {
+    kind: "image",
+    maxImages: 8,
+    summary: "Alias for flow-image with reference images."
   },
   "text-to-image": {
     kind: "image",

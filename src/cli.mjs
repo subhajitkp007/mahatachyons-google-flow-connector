@@ -185,43 +185,75 @@ export async function runCli(argv = process.argv) {
   const gen = program.command("generate").description("Create, inspect, wait on, or resume Flow generation jobs");
 
   gen
-    .command("create")
+    .command("create [modeArg]")
     .description("Submit one or more Flow generation jobs")
-    .option("-m, --mode <mode>", `Generation mode (${GENERATION_MODES.join("|")})`, "flow-image")
+    .option("-m, --mode <mode>", `Generation mode (${GENERATION_MODES.join("|")})`)
     .option("-p, --prompt <text>", "Prompt text")
     .option("--prompts-file <path>", "Text or JSON file with multiple prompts (batch mode)")
     .option("-i, --images <paths...>", "Local reference image/video file paths")
+    .option("--image <paths...>", "Alias for --images")
+    .option("--video <paths...>", "Alias for --images (for flow-video-to-video)")
     .option("--asset-ref <names...>", "Attach existing project assets by name")
+    .option("--asset <names...>", "Alias for --asset-ref")
     .option("--character-ref <names...>", "Attach existing Flow characters by name")
+    .option("--character <names...>", "Alias for --character-ref")
     .option("--character-name <name>", "Character name (for flow-create-character / flow-set-voice)")
+    .option("--name <name>", "Alias for --character-name or --new-name")
     .option("--voice <filter>", "Preset voice search filter (for flow-set-voice)")
     .option("--new-name <name>", "New asset title (for flow-rename-asset)")
     .option("--image-model <model>", `Model (${FLOW_MODELS.join("|")})`)
+    .option("--model <model>", `Alias for --image-model (${FLOW_MODELS.join("|")})`)
     .option("--aspect <ratio>", `Aspect ratio (${ASPECT_RATIOS.join("|")})`)
+    .option("--aspect-ratio <ratio>", `Alias for --aspect (${ASPECT_RATIOS.join("|")})`)
     .option("--video-option <duration>", `Video duration (${VIDEO_DURATIONS.join("|")})`)
+    .option("--duration <duration>", "Alias for --video-option (4s, 6s, 8s, 10s)")
     .option("--video-resolution <res>", `Video resolution (${VIDEO_RESOLUTIONS.join("|")})`)
+    .option("--resolution <res>", "Alias for --video-resolution (360p, 480p, 720p)")
     .option("--outputs-per-prompt <n>", "Outputs per prompt (1-4)", (v) => parseInt(v, 10))
+    .option("--outputs <n>", "Alias for --outputs-per-prompt (1-4)", (v) => parseInt(v, 10))
     .option("--image-quality <q>", `Image download quality (${IMAGE_QUALITIES.join("|")})`)
     .option("--video-quality <q>", `Video download quality (${VIDEO_QUALITIES.join("|")})`)
     .option("--new-project", "Start in a newly created Flow project")
     .option("-o, --output-dir <dir>", "Subfolder inside ~/Downloads (default: flow-connector)")
+    .option("--folder <dir>", "Alias for --output-dir")
     .option("--prefix <prefix>", "Filename prefix for downloaded files")
     .option("--wait", "Wait for all submitted jobs to finish and print output file paths")
     .option("--json", "Output JSON")
-    .action(async (opts) => {
+    .action(async (modeArg, opts) => {
+      const rawMode = modeArg || opts.mode || "flow-image";
+      const normalizedMode =
+        rawMode === "flow-text-to-image" || rawMode === "flow-image-to-image" || rawMode === "text-to-image" || rawMode === "image-to-image"
+          ? "flow-image"
+          : rawMode;
+
       const prompts = parsePromptsInput(opts.prompt, opts.promptsFile);
       if (prompts.length === 0) prompts.push("");
 
+      const modelVal = opts.imageModel || opts.model;
+      const aspectVal = opts.aspect || opts.aspectRatio;
+      const rawDur = opts.videoOption || opts.duration;
+      const durationVal = rawDur ? `${String(rawDur).replace(/s$/, "")}s` : undefined;
+      const rawRes = opts.videoResolution || opts.resolution;
+      const resVal = rawRes === "360p" ? "480p" : rawRes;
+      const outputsVal = opts.outputsPerPrompt || opts.outputs;
+
       const params = {
-        ...(opts.imageModel ? { imageModel: opts.imageModel } : {}),
-        ...(opts.aspect ? { aspectRatio: opts.aspect } : {}),
-        ...(opts.videoOption ? { videoOption: opts.videoOption } : {}),
-        ...(opts.videoResolution ? { videoResolution: opts.videoResolution } : {}),
-        ...(opts.outputsPerPrompt ? { outputsPerPrompt: opts.outputsPerPrompt } : {}),
+        ...(modelVal ? { imageModel: modelVal } : {}),
+        ...(aspectVal ? { aspectRatio: aspectVal } : {}),
+        ...(durationVal ? { videoOption: durationVal } : {}),
+        ...(resVal ? { videoResolution: resVal } : {}),
+        ...(outputsVal ? { outputsPerPrompt: outputsVal } : {}),
         ...(opts.imageQuality ? { downloadImageQuality: opts.imageQuality } : {}),
         ...(opts.videoQuality ? { downloadVideoQuality: opts.videoQuality } : {}),
         ...(opts.newProject ? { newProject: true } : {})
       };
+
+      const imagePaths = [...(opts.images ?? []), ...(opts.image ?? []), ...(opts.video ?? [])];
+      const assetRefs = opts.assetRef || opts.asset;
+      const characterRefs = opts.characterRef || opts.character;
+      const characterName = opts.characterName || (normalizedMode !== "flow-rename-asset" ? opts.name : undefined);
+      const newAssetName = opts.newName || (normalizedMode === "flow-rename-asset" ? opts.name : undefined);
+      const outputDir = opts.outputDir || opts.folder;
 
       const runId = `run_${Date.now().toString(36)}`;
       const submittedJobs = [];
@@ -229,16 +261,16 @@ export async function runCli(argv = process.argv) {
       for (let idx = 0; idx < prompts.length; idx++) {
         const jobParams = idx === 0 ? params : { ...params, newProject: false };
         const res = await client.createJob({
-          mode: opts.mode,
+          mode: normalizedMode,
           prompt: prompts[idx],
           params: jobParams,
-          imagePaths: opts.images ?? [],
-          assetRefs: opts.assetRef,
-          characterRefs: opts.characterRef,
-          characterName: opts.characterName,
+          imagePaths,
+          assetRefs,
+          characterRefs,
+          characterName,
           voiceFilter: opts.voice,
-          newAssetName: opts.newName,
-          outputDir: opts.outputDir,
+          newAssetName,
+          outputDir,
           filenamePrefix: opts.prefix ? (prompts.length > 1 ? `${opts.prefix}-${idx + 1}` : opts.prefix) : undefined
         });
         submittedJobs.push(res.job);
