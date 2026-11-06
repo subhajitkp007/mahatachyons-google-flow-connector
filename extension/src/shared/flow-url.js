@@ -2,9 +2,21 @@ export const FLOW_TAB_PATTERNS = [
   "https://flow.google.com/*",
   "https://labs.google/*"
 ];
+export const FLOW_ORIGIN_PATTERNS = FLOW_TAB_PATTERNS;
 
 export const FLOW_BASE_URL = "https://flow.google.com";
+export const FLOW_HOME_URL = "https://labs.google/fx/tools/flow";
 export const PROJECT_PATH_RE = /(?:\/fx\/tools\/flow)?\/project\/([^/?#]+)/;
+
+export function isVideoGenerationMode(mode) {
+  return (
+    mode === "flow-text-to-video" ||
+    mode === "flow-frame-to-video" ||
+    mode === "flow-ingredients-to-video" ||
+    mode === "flow-video-to-video" ||
+    mode === "flow-extend-video"
+  );
+}
 
 export function isFlowUrl(urlStr) {
   try {

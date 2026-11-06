@@ -3,13 +3,16 @@ const numBound = (s) => String.raw`(?<!\d)` + s + String.raw`(?!\d)`;
 export const DEFAULT_BRIDGE_PORT = 8791;
 
 export const MODE_LIMITS = {
-  "flow-text-to-image": { maxInputImages: 0, maxOutputs: 4 },
+  "flow-image": { maxInputImages: 10, maxOutputs: 4 },
+  "text-to-image": { maxInputImages: 10, maxOutputs: 4 },
+  "image-to-image": { maxInputImages: 10, maxOutputs: 4 },
+  "flow-text-to-image": { maxInputImages: 10, maxOutputs: 4 },
   "flow-image-to-image": { maxInputImages: 10, maxOutputs: 4 },
   "flow-text-to-video": { maxInputImages: 0, maxOutputs: 4 },
   "flow-frame-to-video": { maxInputImages: 2, maxOutputs: 4 },
   "flow-ingredients-to-video": { maxInputImages: 7, maxOutputs: 4 },
   "flow-video-to-video": { maxInputImages: 1, maxOutputs: 4 },
-  "flow-create-character": { maxInputImages: 0, maxOutputs: 1 },
+  "flow-create-character": { maxInputImages: 1, maxOutputs: 1 },
   "flow-set-voice": { maxInputImages: 0, maxOutputs: 1 },
   "flow-extend-video": { maxInputImages: 0, maxOutputs: 1 },
   "flow-rename-asset": { maxInputImages: 1, maxOutputs: 1 },

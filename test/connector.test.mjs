@@ -4,48 +4,42 @@ import WebSocket from "ws";
 import { BridgeServer, BridgeClient } from "../src/bridge.mjs";
 import { JobCreateSchema, GENERATION_MODES } from "../src/shared.mjs";
 import {
-  extractSignedMediaUrls,
-  extractPromptPairs,
-  extractAsbPairs,
+  extractFlowMediaUrls,
+  extractMediaPrompts,
+  extractAsbTokens,
   isFlowUrl,
   isVideoGenerationMode
 } from "../extension/src/shared/flow-url.js";
+import { getSelectors, getMaxReferences } from "../extension/src/shared/selectors.js";
 
-test("Flow URL and RPC payload extractors work accurately", () => {
+test("Flow URL, selectors, and RPC payload extractors work accurately", () => {
   assert.equal(isFlowUrl("https://labs.google/fx/tools/flow/project/123"), true);
   assert.equal(isFlowUrl("https://flow.google.com/project/abc"), true);
   assert.equal(isFlowUrl("https://example.com"), false);
   assert.equal(isVideoGenerationMode("flow-text-to-video"), true);
   assert.equal(isVideoGenerationMode("flow-image"), false);
 
-  const sampleRpc = JSON.stringify({
-    media: [
-      {
-        name: "11111111-2222-3333-4444-555555555555",
-        prompt: "cinematic neon skyline",
-        url: "https://storage.googleapis.com/ai-sandbox-videofx/video/11111111-2222-3333-4444-555555555555?GoogleAccessId=test"
-      }
-    ],
-    workflows: [
-      {
-        metadata: {
-          name: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-          createTime: "2026-11-06T23:00:00Z"
-        }
-      }
-    ]
-  });
+  const selectors = getSelectors();
+  assert.ok(selectors.promptInput.length > 0);
+  assert.ok(selectors.submitButton.length > 0);
+  assert.equal(getMaxReferences("flow-image", "nano-banana-pro"), 10);
+  assert.equal(getMaxReferences("flow-ingredients-to-video", "veo-3.1-fast"), 3);
 
-  const urls = extractSignedMediaUrls(sampleRpc);
+  const sampleRpc =
+    '["11111111-2222-3333-4444-555555555555",null,"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",null,[[null,1,null,2,"cinematic neon skyline"]]] ' +
+    'https://flow-content.google/video/11111111-2222-3333-4444-555555555555?token=abc ' +
+    '["11111111-2222-3333-4444-555555555555","22222222-3333-4444-5555-666666666666","33333333-4444-5555-6666-777777777777","/asb/asb_tok_123",[[1,2],"cinematic neon skyline"]]';
+
+  const urls = extractFlowMediaUrls(sampleRpc);
   assert.equal(urls.length, 1);
-  assert.ok(urls[0].includes("ai-sandbox-videofx/video/11111111-2222-3333-4444-555555555555"));
+  assert.ok(urls[0].includes("flow-content.google/video/11111111-2222-3333-4444-555555555555"));
 
-  const prompts = extractPromptPairs(sampleRpc);
+  const prompts = extractMediaPrompts(sampleRpc);
   assert.deepEqual(prompts, [["11111111-2222-3333-4444-555555555555", "cinematic neon skyline"]]);
 
-  const asbs = extractAsbPairs(sampleRpc);
+  const asbs = extractAsbTokens(sampleRpc);
   assert.equal(asbs.length, 1);
-  assert.equal(asbs[0][0], "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+  assert.deepEqual(asbs[0], ["11111111-2222-3333-4444-555555555555", "asb_tok_123", "cinematic neon skyline"]);
 });
 
 test("JobCreateSchema validates all Flow modes and parameters", () => {
