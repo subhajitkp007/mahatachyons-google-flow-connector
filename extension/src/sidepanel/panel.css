@@ -362,6 +362,97 @@ body {
   flex: 1;
 }
 
+.model-switcher-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.active-model-name {
+  font-weight: 700;
+  color: var(--accent-hover);
+  font-size: 11px;
+}
+
+.model-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.btn-model {
+  background: #0f1420;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-model:hover {
+  background: var(--surface-hover);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.btn-model.active {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.model-badge {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+.model-badge.green {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.model-badge.blue {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+.model-badge.yellow {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.model-badge.red {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.model-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.model-sub {
+  font-size: 10px;
+  color: var(--muted);
+}
+
 .field-row {
   display: flex;
   gap: 8px;

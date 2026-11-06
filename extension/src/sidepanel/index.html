@@ -82,20 +82,38 @@
           </select>
         </label>
 
+        <!-- Model Switcher Buttons -->
+        <div class="model-switcher-group">
+          <div class="field-label-row">
+            <span>Video Model Quick Switch</span>
+            <span class="active-model-name" id="selected-model-pill">Omni Flash (Token Saver)</span>
+          </div>
+          <div class="model-btn-grid" id="video-model-buttons">
+            <button type="button" class="btn-model active" data-model="omni-flash" title="Lowest token cost (Default)">
+              <span class="model-badge green">Lowest Tokens</span>
+              <span class="model-title">Omni Flash</span>
+              <span class="model-sub">Fast &amp; Ultra-Light</span>
+            </button>
+            <button type="button" class="btn-model" data-model="veo-3.1-lite" title="Moderate tokens">
+              <span class="model-badge blue">Light Veo</span>
+              <span class="model-title">Veo 3.1 Lite</span>
+              <span class="model-sub">Lightweight Veo</span>
+            </button>
+            <button type="button" class="btn-model" data-model="veo-3.1-fast" title="Higher tokens">
+              <span class="model-badge yellow">Standard</span>
+              <span class="model-title">Veo 3.1 Fast</span>
+              <span class="model-sub">Balanced Speed</span>
+            </button>
+            <button type="button" class="btn-model" data-model="veo-3.1-quality" title="Highest tokens — use sparingly">
+              <span class="model-badge red">Heavy Tokens</span>
+              <span class="model-title">Veo Quality</span>
+              <span class="model-sub">Full Fidelity</span>
+            </button>
+          </div>
+          <input type="hidden" id="q-model" value="omni-flash" />
+        </div>
+
         <div class="field-row">
-          <label class="field">
-            <span>Model</span>
-            <select id="q-model">
-              <option value="">Token Saver Default (Omni Flash / Lite)</option>
-              <option value="omni-flash">Omni Flash (Lowest Token Video)</option>
-              <option value="veo-3.1-lite">Veo 3.1 Lite (Light Video)</option>
-              <option value="nano-banana-2-lite">Nano Banana 2 Lite (Lowest Token Image)</option>
-              <option value="nano-banana-2">Nano Banana 2 (Image)</option>
-              <option value="veo-3.1-fast">Veo 3.1 Fast (Video)</option>
-              <option value="veo-3.1-quality">Veo 3.1 Quality (Heavy Video)</option>
-              <option value="nano-banana-pro">Nano Banana Pro (Heavy Image)</option>
-            </select>
-          </label>
 
           <label class="field">
             <span>Aspect Ratio</span>

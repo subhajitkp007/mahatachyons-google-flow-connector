@@ -170,7 +170,52 @@ document.getElementById("clear-done-btn").addEventListener("click", async () => 
   if (res?.ok) renderJobs(res.jobs);
 });
 
-// Quick Run Composer
+// Quick Run Composer & Model Switcher Buttons
+const modelInput = document.getElementById("q-model");
+const selectedModelPill = document.getElementById("selected-model-pill");
+const modelButtons = document.querySelectorAll(".btn-model");
+const modeSelect = document.getElementById("q-mode");
+const switcherGroup = document.querySelector(".model-switcher-group");
+
+const MODEL_DISPLAY_NAMES = {
+  "omni-flash": "Omni Flash (Lowest Token Video)",
+  "veo-3.1-lite": "Veo 3.1 Lite (Lightweight Video)",
+  "veo-3.1-fast": "Veo 3.1 Fast (Balanced Video)",
+  "veo-3.1-quality": "Veo 3.1 Quality (Heavy Video)",
+  "nano-banana-2-lite": "Nano Banana 2 Lite (Light Image)",
+  "nano-banana-2": "Nano Banana 2 (Standard Image)",
+  "nano-banana-pro": "Nano Banana Pro (Heavy Image)"
+};
+
+function selectModel(modelKey) {
+  modelInput.value = modelKey;
+  if (selectedModelPill) {
+    selectedModelPill.textContent = MODEL_DISPLAY_NAMES[modelKey] ?? modelKey;
+  }
+  modelButtons.forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.model === modelKey);
+  });
+}
+
+modelButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    selectModel(btn.dataset.model);
+  });
+});
+
+modeSelect.addEventListener("change", () => {
+  const isVideo = modeSelect.value.includes("video");
+  if (switcherGroup) {
+    switcherGroup.style.display = isVideo ? "flex" : "none";
+  }
+  if (!isVideo) {
+    modelInput.value = "nano-banana-2-lite";
+  } else {
+    const activeBtn = document.querySelector(".btn-model.active");
+    modelInput.value = activeBtn ? activeBtn.dataset.model : "omni-flash";
+  }
+});
+
 document.getElementById("quick-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const mode = document.getElementById("q-mode").value;
