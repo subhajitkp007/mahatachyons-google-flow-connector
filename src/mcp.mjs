@@ -44,6 +44,8 @@ export async function startMcpServer() {
       wait: z.boolean().default(true).describe("Wait for generation to complete before returning")
     },
     async (args) => {
+      const defaultModel = isVideoGenerationMode(args.mode) ? "omni-flash" : "nano-banana-2-lite";
+      const chosenModel = args.imageModel || defaultModel;
       const created = await client.createJob({
         mode: args.mode,
         prompt: args.prompt,
@@ -56,7 +58,7 @@ export async function startMcpServer() {
         outputDir: args.outputDir,
         filenamePrefix: args.filenamePrefix,
         params: {
-          imageModel: args.imageModel,
+          imageModel: chosenModel,
           aspectRatio: args.aspectRatio,
           videoOption: args.videoOption,
           videoResolution: args.videoResolution,

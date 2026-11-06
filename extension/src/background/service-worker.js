@@ -54,6 +54,7 @@ async function getBatchSpeedConfig() {
 const MODEL_FALLBACKS = {
   "veo-3.1-quality": "veo-3.1-fast",
   "veo-3.1-fast": "veo-3.1-lite",
+  "veo-3.1-lite": "omni-flash",
   "nano-banana-pro": "nano-banana-2",
   "nano-banana-2": "nano-banana-2-lite"
 };
@@ -61,7 +62,7 @@ const MODEL_FALLBACKS = {
 function getNextFallbackModel(job) {
   const current =
     job.params.imageModel ??
-    (isVideoGenerationMode(job.mode) ? "veo-3.1-fast" : "nano-banana-2");
+    (isVideoGenerationMode(job.mode) ? "omni-flash" : "nano-banana-2-lite");
   return MODEL_FALLBACKS[current] ?? null;
 }
 

@@ -229,7 +229,8 @@ export async function runCli(argv = process.argv) {
       const prompts = parsePromptsInput(opts.prompt, opts.promptsFile);
       if (prompts.length === 0) prompts.push("");
 
-      const modelVal = opts.imageModel || opts.model;
+      const defaultModel = isVideoGenerationMode(normalizedMode) ? "omni-flash" : "nano-banana-2-lite";
+      const modelVal = opts.imageModel || opts.model || defaultModel;
       const aspectVal = opts.aspect || opts.aspectRatio;
       const rawDur = opts.videoOption || opts.duration;
       const durationVal = rawDur ? `${String(rawDur).replace(/s$/, "")}s` : undefined;
